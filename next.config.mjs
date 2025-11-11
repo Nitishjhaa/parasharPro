@@ -1,7 +1,18 @@
-/** @type {import('next').NextConfig} */
+import withPWA from "next-pwa";
+
+const withPWACustom = withPWA({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development", // PWA only in production
+  buildExcludes: [/app-build-manifest\.json$/], // required for App Router
+});
+
+
+
 const nextConfig = {
-  /* config options here */
+  reactStrictMode: true,
   reactCompiler: true,
 };
 
-export default nextConfig;
+export default withPWACustom(nextConfig);
