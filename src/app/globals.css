@@ -26,5 +26,5 @@ body {
 }
 
 .card-bg {
-  @apply bg-[#FDC565]/50 hover:bg-[#FDC565]/80 transition-all duration-300 rounded-3xl shadow-sm hover:shadow-md cursor-pointer;
+  @apply bg-radial from-[#F26A20]/50 to-[red] hover:bg-[#F26A20]/80 transition-all duration-300 rounded-3xl shadow-sm hover:shadow-md cursor-pointer;
 }

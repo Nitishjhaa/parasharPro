@@ -9,9 +9,6 @@ import { FaRegUser } from "react-icons/fa";
 
 export default function Page() {
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isUserOpen, setIsUserOpen] = useState(false)
-
   const cards = [
     { href: "/child", icon: "/images/footprint.svg", title: "Child Kundali", desc: "Understand your child's cosmic blueprint and future path." },
     { href: "/kundali", icon: "/images/star.svg", title: "Kundali", desc: "Generate detailed birth charts with advanced interpretations." },
@@ -27,7 +24,8 @@ export default function Page() {
           <div className="absolute top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#FDC565]/30 blur-[180px] rounded-full"></div>
           <div className="absolute bottom-0 right-1/2 translate-x-1/2 w-[400px] h-[400px] bg-[#FFAE42]/20 blur-[160px] rounded-full"></div>
         </div>
-
+        {/* <img src="images/kundali.png" alt="" /> */}
+        {/* work on it */}
         {/* Main Content */}
         <div className="relative z-10 w-[92%] md:w-[85%] max-w-7xl text-center">
           {/* Header */}
@@ -81,26 +79,9 @@ export default function Page() {
         <div className="mx-auto w-[98%] min-h-screen">
           <div className="flex flex-col gap-3 h-screen">
             <div className="flex-[0.5] rounded-3xl overflow-hidden">
-              <div className="dark:bg-[#393939] bg-[#c9c9c9] w-full h-full flex justify-between items-center">
-                <div
-                  className="w-16 h-16 flex justify-center items-center dark:bg-[#232323] bg-[#dedede] rounded-full ml-3 active:scale-95"
-                  onClick={(e) => setIsMenuOpen(!isMenuOpen)}
-                >
-                  {isMenuOpen ? <RiMenuFoldLine size={25} /> : <RiMenuFold2Line size={25} />}
-
-                </div>
-                <div className={` ${isMenuOpen ? "left-1" : "-left-80"} w-60 h-[90vh] absolute top-24 transition-all duration-300 ease-in dark:bg-[#030303] bg-[#fdfdfd] rounded-3xl`}>
-
-                </div>
-                <div
-                  className="w-16 h-16 flex justify-center items-center dark:bg-[#232323] bg-[#dedede] rounded-full mr-3 active:scale-95"
-                  onClick={(e) => setIsUserOpen(!isUserOpen)}>
-                  <FaRegUser size={25} />
-
-                  <div
-                    className={`${isUserOpen ? 'flex opacity-100' : 'hidden opacity-0'} flex-col h-50 w-50 absolute right-1.5 top-23 z-20 dark:bg-[#030303] bg-[#fdfdfd] rounded-3xl transition-all duration-300 ease-in`}>
-
-                  </div>
+              <div className="dark:bg-[#232323] bg-[#c9c9c9] w-full h-full flex justify-between items-center">
+                <div className="ml-5 text-4xl flex gap-5 items-center">
+                  <img src='images/kundali.png' className="w-15" /> Horescope
                 </div>
               </div>
             </div>
@@ -150,7 +131,9 @@ export default function Page() {
                 </div>
 
                 {/* Bottom Box */}
-                <div className="flex-1 rounded-3xl border border-neutral-300 dark:border-neutral-700"></div>
+                <div className="flex-1 rounded-3xl border border-neutral-300 dark:border-neutral-700">
+
+                </div>
 
               </div>
             </div>
