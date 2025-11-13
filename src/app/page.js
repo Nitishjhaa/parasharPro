@@ -114,24 +114,33 @@ export default function Page() {
                   <div className="flex-[2.5] rounded-3xl flex gap-3">
 
                     {/* Left Big Box */}
-                    <div className="flex-1 rounded-3xl card-bg p-5 overflow-hidden relative">
-                      <Link href="/kundali">
-                        <div className="text-2xl">
-                          Kundali
-                        </div>
-                        <img src="/images/testing.png" alt="" className="w-35 h-35 absolute bottom-0 right-0" />
-                      </Link>
-                    </div>
+                    <Link href="/kundali" className="flex-1 rounded-3xl card-bg p-5 overflow-hidden relative">
+                      {/* <Link href="/kundali"> */}
+                      <div className="text-2xl">
+                        Kundali
+                      </div>
+                      <img src="/images/homeKundali.png" alt="" className="w-35 h-35 absolute bottom-0 right-0" />
+                      {/* </Link> */}
+                    </Link>
 
                     {/* Right Column */}
-                    <div className="flex-1 flex flex-col gap-3">
-                      <div className="flex-1 rounded-3xl card-bg p-5"></div>
-                      <div className="flex-1 rounded-3xl card-bg p-5"></div>
+                    <div className="flex-1 flex flex-col gap-3 ">
+                      <Link href="/matchmatching" className="flex-1 rounded-3xl card-bg p-5 pl-3 relative">
+                        <div className="text-lg">
+                          Matchmatching
+                        </div>
+                        <img src="/images/homeChild.png" alt="" className="w-15 h-15 absolute bottom-0 right-0" />
+                      </Link>
+                      <Link href="/child" className="flex-1 rounded-3xl card-bg p-5">
+                      
+                      </Link>
                     </div>
                   </div>
 
                   {/* Middle Full Box */}
-                  <div className="flex-1 rounded-3xl card-bg"></div>
+                  <div className="flex-1 rounded-3xl card-bg">
+                    
+                  </div>
                 </div>
 
                 {/* Bottom Box */}
