@@ -3,9 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { RiMenuFold2Line } from "react-icons/ri";
-import { RiMenuFoldLine } from "react-icons/ri";
-import { FaRegUser } from "react-icons/fa";
+
 
 export default function Page() {
 
@@ -18,6 +16,8 @@ export default function Page() {
 
   return (
     <>
+
+
       <div className="max-md:hidden relative flex items-center justify-center min-h-screen overflow-hidden bg-linear-to-br from-[#fffaf2] to-[#fdf5e8] dark:from-[#121212] dark:to-[#1a1a1a] max-md:py-20">
         {/* Background Aura */}
         <div className="absolute inset-0 overflow-hidden">

@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { CiClock2 } from "react-icons/ci";
+import { HiLanguage } from "react-icons/hi2";
+import { FaDatabase } from "react-icons/fa";
+import { toast } from 'sonner';
 
-export default function KundliPage() {
+
+export default function KundaliPage() {
   const [cities, setCities] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [highlight, setHighlight] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
 
   const [form, setForm] = useState({
     name: "",
@@ -157,14 +163,28 @@ export default function KundliPage() {
   // SUBMIT
   async function submit() {
     const cityObj = cities.find((c) => c.city === form.city);
-    if (!cityObj) return alert("Please select a valid city from suggestions.");
+    if (!cityObj)
+      return (
+        toast.error("Please select a valid city from suggestions.")
+      )
 
     // Convert UI formats → backend formats
     const isoDate = normalizeDateToISO(form.birthDate);
-    if (!isoDate) return alert("Invalid Date Format (Use DD-MM-YYYY)");
+    if (!isoDate) {
+      toast.error("Invalid Date Format (Use DD-MM-YYYY)");
+      return;
+    }
 
     const isoTime = normalizeTime(form.birthTime);
-    if (!isoTime) return alert("Invalid Time Format (Use HH:MM)");
+    if (!isoTime) {
+      toast.error("Invalid Time Format (Use HH:MM)");
+      return;
+    }
+
+if (!form.gender) {
+  toast.error("Gender needed to progress further");
+  return;
+}
 
     const payload = {
       name: form.name,
@@ -200,7 +220,7 @@ export default function KundliPage() {
     <div className="min-h-screen">
 
       {/* ====================== MOBILE VERSION ====================== */}
-      <div className="md:hidden p-4 bg-[#161616] text-white">
+      <div className="md:hidden p-4 text-white">
         <div className="w-[98%] mx-auto">
 
           {/* HEADER */}
@@ -208,13 +228,13 @@ export default function KundliPage() {
             <div className="dark:bg-[#232323] bg-[#d0d0d0] p-5 flex gap-4 items-center">
               <img src="/images/kundaliHead.png" className="w-12" />
               <span className="bg-linear-to-l from-[#F26A20]/50 to-red-500 bg-clip-text text-transparent text-3xl">
-                Kundli
+                Kundali
               </span>
             </div>
           </div>
 
           {/* MOBILE FORM */}
-          <div className="card-bg rounded-3xl p-5">
+          <div className="card-bg rounded-3xl p-5 h-[80vh]">
             <div className="grid grid-cols-[1fr_60px] gap-3">
 
               {/* LEFT SIDE */}
@@ -222,7 +242,7 @@ export default function KundliPage() {
 
                 {/* Gender */}
                 <div>
-                  <label className="text-[#ffa94d] font-semibold">Gender:</label>
+                  <label className="text-[#061224] font-semibold">Gender:</label>
                   <div className="flex items-center gap-4 mt-1">
                     <label className="flex items-center gap-2">
                       <input type="radio" name="gender" value="Male"
@@ -240,7 +260,7 @@ export default function KundliPage() {
 
                 {/* Name */}
                 <div>
-                  <label className="text-[#ffa94d] font-semibold">Name:</label>
+                  <label className="text-[#061224] font-semibold">Name:</label>
                   <input
                     className="w-full bg-transparent border-b border-gray-400 mt-1 p-1 outline-none"
                     placeholder="Your Name"
@@ -252,7 +272,7 @@ export default function KundliPage() {
 
                 {/* DATE SPLIT */}
                 <div>
-                  <label className="text-[#ffa94d] font-semibold">Date:</label>
+                  <label className="text-[#061224] font-semibold">Date:</label>
                   <div className="grid grid-cols-3 gap-3 mt-1">
                     {/* DD */}
                     <input
@@ -273,11 +293,57 @@ export default function KundliPage() {
                       placeholder="MM"
                       value={form.birthDate.split("-")[1] || ""}
                       onChange={(e) => {
-                        const mm = e.target.value;
-                        const [dd, _, yyyy] = form.birthDate.split("-");
-                        setForm((s) => ({ ...s, birthDate: `${dd || ""}-${mm}-${yyyy || ""}` }));
+                        let mm = e.target.value.replace(/\D/g, ""); // numbers only
+                        const [dd, oldMM, yyyy] = form.birthDate.split("-");
+
+                        // --------------------------
+                        // WHEN USER CLEARS INPUT
+                        // --------------------------
+                        if (mm === "") {
+                          setForm((s) => ({
+                            ...s,
+                            birthDate: `${dd || ""}-${""}-${yyyy || ""}`
+                          }));
+                          return;
+                        }
+
+                        // --------------------------
+                        // IF USER TYPES ONE DIGIT
+                        // --------------------------
+                        if (mm.length === 1) {
+                          // allow 1–9
+                          if (Number(mm) > 1) {
+                            // Example: user typed "5" → valid as "05"
+                            mm = "0" + mm;
+                          }
+                          // Example: user typed "0" → allow and wait for next digit
+                          setForm((s) => ({
+                            ...s,
+                            birthDate: `${dd || ""}-${mm}-${yyyy || ""}`
+                          }));
+                          return;
+                        }
+
+                        // --------------------------
+                        // NOW LENGTH = 2
+                        // VALIDATE 01–12
+                        // --------------------------
+                        if (mm.length === 2) {
+                          let num = Number(mm);
+
+                          if (num < 1) num = 1;
+                          if (num > 12) num = 12;
+
+                          mm = String(num).padStart(2, "0");
+                        }
+
+                        setForm((s) => ({
+                          ...s,
+                          birthDate: `${dd || ""}-${mm}-${yyyy || ""}`
+                        }));
                       }}
                     />
+
                     {/* YYYY */}
                     <input
                       className="bg-transparent border-b border-gray-400 p-2 outline-none text-center"
@@ -295,7 +361,7 @@ export default function KundliPage() {
 
                 {/* TIME SPLIT */}
                 <div>
-                  <label className="text-[#ffa94d] font-semibold">Time (24 hrs):</label>
+                  <label className="text-[#061224] font-semibold">Time (24 hrs):</label>
                   <div className="grid grid-cols-3 gap-3 mt-1">
                     {/* HH */}
                     <input
@@ -316,11 +382,19 @@ export default function KundliPage() {
                       className="bg-transparent border-b border-gray-400 p-2 outline-none text-center"
                       value={form.birthTime.split(":")[1] || ""}
                       onChange={(e) => {
-                        const m2 = e.target.value;
+                        let m2 = e.target.value.replace(/\D/g, ""); // allow only numbers
+
+                        // If number > 59 → restrict (because it's MINUTES)
+                        if (Number(m2) > 59) m2 = "59";
+
                         const [h, _, s2] = form.birthTime.split(":");
-                        setForm((s) => ({ ...s, birthTime: `${h || ""}:${m2}:${s2 || ""}` }));
+                        setForm((s) => ({
+                          ...s,
+                          birthTime: `${h || ""}:${m2}:${s2 || ""}`
+                        }));
                       }}
                     />
+
                     {/* SS */}
                     <input
                       maxLength={2}
@@ -338,7 +412,7 @@ export default function KundliPage() {
 
                 {/* CITY */}
                 <div className="relative" ref={suggestionsRef}>
-                  <label className="text-[#ffa94d] font-semibold">Place:</label>
+                  <label className="text-[#061224] font-semibold">Place:</label>
                   <input
                     ref={cityInputRef}
                     className="w-full bg-transparent border-b border-gray-400 mt-1 p-2 outline-none"
@@ -354,7 +428,7 @@ export default function KundliPage() {
                     <div className="absolute left-0 right-0 bg-[#1e1e1e] rounded-xl max-h-60 overflow-auto z-50 mt-2">
                       {filtered.map((c, i) => (
                         <div
-                          key={c.id}
+                          key={i}
                           onClick={() => selectCity(c.city)}
                           className={`p-3 cursor-pointer ${highlight === i ? "bg-[#333]" : ""
                             }`}
@@ -371,15 +445,16 @@ export default function KundliPage() {
 
               {/* RIGHT SIDE BUTTON BAR */}
               <div className="flex flex-col items-center gap-6 pt-4">
-                <button className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-xl font-bold">A↔B</span>
+                <button className="w-12 h-12 bg-[#061224] rounded-lg flex items-center justify-center">
+                  <span className="text-white text-xl font-bold "><HiLanguage /></span>
                 </button>
 
-                <button className="w-12 h-12 bg-red-600 rounded-lg opacity-40"></button>
-                <button className="w-12 h-12 bg-red-600 rounded-lg opacity-40"></button>
+                <button className="w-12 h-12 bg-[#061224] rounded-lg flex items-center justify-center">
+                  <FaDatabase />
+                </button>
 
                 <button
-                  className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center"
+                  className="w-12 h-12 bg-[#061224] rounded-lg flex items-center justify-center"
                   onClick={() => {
                     const now = new Date();
 
@@ -398,7 +473,7 @@ export default function KundliPage() {
                     }));
                   }}
                 >
-                  <span className="text-white text-xl">🕒</span>
+                  <span className="text-white text-xl"><CiClock2 size={25} /></span>
                 </button>
               </div>
 
@@ -409,7 +484,7 @@ export default function KundliPage() {
               onClick={submit}
               className="w-full bg-[#F26A20] rounded-xl py-3 text-white font-semibold mt-6"
             >
-              {loading ? "Calculating..." : "Generate Kundli"}
+              {loading ? "Calculating..." : "Generate Kundali"}
             </button>
           </div>
 
@@ -431,10 +506,10 @@ export default function KundliPage() {
         <div className="max-w-4xl mx-auto bg-white/80 border border-yellow-300 rounded-3xl shadow-lg p-12">
 
           <h1 className="text-center text-5xl font-bold text-[#d98b00] mb-4">
-            Kundli
+            Kundali
           </h1>
           <p className="text-center text-gray-600 mb-10">
-            Enter your birth details to generate your personalized Kundli
+            Enter your birth details to generate your personalized Kundali
           </p>
 
           {/* DESKTOP FORM */}
@@ -511,7 +586,7 @@ export default function KundliPage() {
                 <div className="absolute left-0 right-0 bg-white rounded-xl shadow max-h-60 overflow-auto z-50 mt-2 border border-gray-200">
                   {filtered.map((c, i) => (
                     <div
-                      key={c.id}
+                      key={i}
                       onClick={() => selectCity(c.city)}
                       className={`p-3 cursor-pointer ${i === highlight ? "bg-yellow-100" : ""
                         }`}
@@ -530,7 +605,7 @@ export default function KundliPage() {
               onClick={submit}
               className="w-full bg-[#f2b300] hover:bg-[#e0a000] text-white rounded-xl py-4 text-lg font-semibold shadow"
             >
-              {loading ? "Calculating..." : "Generate Kundli"}
+              {loading ? "Calculating..." : "Generate Kundali"}
             </button>
           </div>
 
