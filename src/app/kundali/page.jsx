@@ -5,6 +5,8 @@ import { CiClock2 } from "react-icons/ci";
 import { HiLanguage } from "react-icons/hi2";
 import { FaDatabase } from "react-icons/fa";
 import { toast } from 'sonner';
+import { useRouter } from "next/navigation";
+import { saveKundali } from "@/lib/db";
 
 
 export default function KundaliPage() {
@@ -13,6 +15,24 @@ export default function KundaliPage() {
   const [highlight, setHighlight] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  const ddRef = useRef(null);
+  const mmRef = useRef(null);
+  const yyyyRef = useRef(null);
+
+  const hhRef = useRef(null);
+  const minRef = useRef(null);
+  const secRef = useRef(null);
+
+  const prev = useRef({
+    dd: "",
+    mm: "",
+    yyyy: "",
+    hh: "",
+    min: "",
+    sec: ""
+  });
+
+  const router = useRouter();
 
   const [form, setForm] = useState({
     name: "",
@@ -209,12 +229,58 @@ export default function KundaliPage() {
 
       const data = await res.json();
       setResult(data);
+
+      // save full record (raw response + meta)
+      await saveKundali({
+        raw: data,
+        meta: {
+          name: form.name,
+          gender: form.gender,
+          birthDate: form.birthDate,
+          birthTime: form.birthTime,
+          city: form.city,
+        }
+      });
+
+      // navigate to the newly saved kundali (index 0)
+      router.push("/kundaliInfo?index=0");
     } catch (err) {
       alert("Failed to fetch");
     }
 
     setLoading(false);
   }
+
+  useEffect(() => {
+    const [dd = "", mm = "", yyyy = ""] = (form.birthDate || "").split("-");
+    const [hh = "", min = "", sec = ""] = (form.birthTime || "").split(":");
+
+    // DATE -----------------------------------------------------
+    if (dd?.length === 2 && prev.current.dd.length !== 2) {
+      mmRef.current?.focus();
+    }
+    if (mm?.length === 2 && prev.current.mm.length !== 2) {
+      yyyyRef.current?.focus();
+    }
+
+    // TIME -----------------------------------------------------
+    if (hh?.length === 2 && prev.current.hh.length !== 2) {
+      minRef.current?.focus();
+    }
+    if (min?.length === 2 && prev.current.min.length !== 2) {
+      secRef.current?.focus();
+    }
+
+    // UPDATE PREVIOUS VALUES -----------------------------------------------------
+    prev.current = {
+      dd,
+      mm,
+      yyyy,
+      hh,
+      min,
+      sec
+    };
+  }, [form.birthDate, form.birthTime]);
 
   return (
     <div className="min-h-screen">
@@ -242,7 +308,7 @@ export default function KundaliPage() {
 
                 {/* Gender */}
                 <div>
-                  <label className="text-[#061224] font-semibold">Gender:</label>
+                  <label className="text-[#d5d5d5] font-semibold">Gender:</label>
                   <div className="flex items-center gap-4 mt-1">
                     <label className="flex items-center gap-2">
                       <input type="radio" name="gender" value="Male"
@@ -260,7 +326,7 @@ export default function KundaliPage() {
 
                 {/* Name */}
                 <div>
-                  <label className="text-[#061224] font-semibold">Name:</label>
+                  <label className="text-[#d5d5d5] font-semibold">Name:</label>
                   <input
                     className="w-full bg-transparent border-b border-gray-400 mt-1 p-1 outline-none"
                     placeholder="Your Name"
@@ -272,13 +338,14 @@ export default function KundaliPage() {
 
                 {/* DATE SPLIT */}
                 <div>
-                  <label className="text-[#061224] font-semibold">Date:</label>
+                  <label className="text-[#d5d5d5] font-semibold">Date:</label>
                   <div className="grid grid-cols-3 gap-3 mt-1">
                     {/* DD */}
                     <input
                       className="bg-transparent border-b border-gray-400 p-2 outline-none text-center"
                       maxLength={2}
                       placeholder="DD"
+                      ref={ddRef}
                       value={form.birthDate.split("-")[0] || ""}
                       onChange={(e) => {
                         const dd = e.target.value;
@@ -291,6 +358,7 @@ export default function KundaliPage() {
                       className="bg-transparent border-b border-gray-400 p-2 outline-none text-center"
                       maxLength={2}
                       placeholder="MM"
+                      ref={mmRef}
                       value={form.birthDate.split("-")[1] || ""}
                       onChange={(e) => {
                         let mm = e.target.value.replace(/\D/g, ""); // numbers only
@@ -349,6 +417,7 @@ export default function KundaliPage() {
                       className="bg-transparent border-b border-gray-400 p-2 outline-none text-center"
                       maxLength={4}
                       placeholder="YYYY"
+                      ref={yyyyRef}
                       value={form.birthDate.split("-")[2] || ""}
                       onChange={(e) => {
                         const yyyy = e.target.value;
@@ -361,12 +430,13 @@ export default function KundaliPage() {
 
                 {/* TIME SPLIT */}
                 <div>
-                  <label className="text-[#061224] font-semibold">Time (24 hrs):</label>
+                  <label className="text-[#d5d5d5] font-semibold">Time (24 hrs):</label>
                   <div className="grid grid-cols-3 gap-3 mt-1">
                     {/* HH */}
                     <input
                       maxLength={2}
                       placeholder="HH"
+                      ref={hhRef}
                       className="bg-transparent border-b border-gray-400 p-2 outline-none text-center"
                       value={form.birthTime.split(":")[0] || ""}
                       onChange={(e) => {
@@ -379,6 +449,7 @@ export default function KundaliPage() {
                     <input
                       maxLength={2}
                       placeholder="MM"
+                      ref={minRef}
                       className="bg-transparent border-b border-gray-400 p-2 outline-none text-center"
                       value={form.birthTime.split(":")[1] || ""}
                       onChange={(e) => {
@@ -399,6 +470,7 @@ export default function KundaliPage() {
                     <input
                       maxLength={2}
                       placeholder="SS"
+                      ref={secRef}
                       className="bg-transparent border-b border-gray-400 p-2 outline-none text-center"
                       value={form.birthTime.split(":")[2] || ""}
                       onChange={(e) => {
@@ -412,7 +484,7 @@ export default function KundaliPage() {
 
                 {/* CITY */}
                 <div className="relative" ref={suggestionsRef}>
-                  <label className="text-[#061224] font-semibold">Place:</label>
+                  <label className="text-[#d5d5d5] font-semibold">Place:</label>
                   <input
                     ref={cityInputRef}
                     className="w-full bg-transparent border-b border-gray-400 mt-1 p-2 outline-none"
@@ -445,16 +517,16 @@ export default function KundaliPage() {
 
               {/* RIGHT SIDE BUTTON BAR */}
               <div className="flex justify-left items-center gap-6 pt-5">
-                <button className="w-12 h-12 bg-[#061224] rounded-lg flex items-center justify-center">
-                  <span className="text-white text-xl font-bold "><HiLanguage /></span>
+                <button className="w-12 h-12 bg-[#ccc] rounded-lg flex items-center justify-center">
+                  <span className="text-black text-xl font-bold "><HiLanguage /></span>
                 </button>
 
-                <button className="w-12 h-12 bg-[#061224] rounded-lg flex items-center justify-center">
-                  <FaDatabase />
+                <button className="w-12 h-12 bg-[#ccc] rounded-lg flex items-center justify-center">
+                  <FaDatabase color="black" />
                 </button>
 
                 <button
-                  className="w-12 h-12 bg-[#061224] rounded-lg flex items-center justify-center"
+                  className="w-12 h-12 bg-[#ccc] rounded-lg flex items-center justify-center"
                   onClick={() => {
                     const now = new Date();
 
@@ -473,7 +545,7 @@ export default function KundaliPage() {
                     }));
                   }}
                 >
-                  <span className="text-white text-xl"><CiClock2 size={25} /></span>
+                  <span className="text-white text-xl"><CiClock2 size={25} color="black" /></span>
                 </button>
               </div>
 
@@ -482,7 +554,7 @@ export default function KundaliPage() {
             {/* SUBMIT */}
             <button
               onClick={submit}
-              className="w-full bg-[#F26A20] rounded-xl py-3 text-white font-semibold mt-6"
+              className="w-full bg-[#104072] rounded-xl py-3 text-white font-semibold mt-6"
             >
               {loading ? "Calculating..." : "Generate Kundali"}
             </button>

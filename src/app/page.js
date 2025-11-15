@@ -1,11 +1,15 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
+import { loadKundalis } from "@/lib/db";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+
+  const router = useRouter();
+  const [recent, setRecent] = useState([]);
 
   const cards = [
     { href: "/child", icon: "/images/footprint.svg", title: "Child Kundali", desc: "Understand your child's cosmic blueprint and future path." },
@@ -13,6 +17,20 @@ export default function Page() {
     { href: "/matchmatching", icon: "/images/ring.svg", title: "Match-Matching", desc: "Check compatibility and discover perfect astrological matches." },
     { href: "/panchang", icon: "/images/shape.svg", title: "Panchang", desc: "View daily tithis, nakshatras, and auspicious timings." },
   ];
+
+  useEffect(() => {
+    async function load() {
+      const list = await loadKundalis();
+      setRecent(list);
+    }
+    load();
+  }, []);
+
+  // Helper to format displayable date/time from meta (meta.birthDate might be DD-MM-YYYY in mobile)
+  const formatMetaDate = (meta) => {
+    if (!meta) return "";
+    return `${meta.birthDate || ""} ${meta.birthTime ? "• " + meta.birthTime : ""}`;
+  };
 
   return (
     <>
@@ -23,8 +41,6 @@ export default function Page() {
           <div className="absolute top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#FDC565]/30 blur-[180px] rounded-full"></div>
           <div className="absolute bottom-0 right-1/2 translate-x-1/2 w-[400px] h-[400px] bg-[#FFAE42]/20 blur-[160px] rounded-full"></div>
         </div>
-        {/* <img src="images/kundali.png" alt="" /> */}
-        {/* work on it */}
         {/* Main Content */}
         <div className="relative z-10 w-[92%] md:w-[85%] max-w-7xl text-center">
           {/* Header */}
@@ -72,10 +88,31 @@ export default function Page() {
               </motion.div>
             ))}
           </div>
+
+          {/* Recent Kundali - Desktop */}
+          <div className="mt-12 text-left">
+            <h2 className="text-2xl font-semibold mb-4">Recent Kundali</h2>
+            <div className="grid md:grid-cols-5 sm:grid-cols-2 grid-cols-1 gap-4">
+              {recent.length === 0 && (
+                <div className="text-gray-600 col-span-full">No recent kundalis</div>
+              )}
+              {recent.map((r, idx) => (
+                <div
+                  key={r.id}
+                  onClick={() => router.push(`/kundaliInfo?index=${idx}`)}
+                  className="cursor-pointer p-4 bg-white/90 dark:bg-[#222]/90 rounded-xl border shadow hover:shadow-lg"
+                >
+                  <div className="font-semibold text-lg">{r.meta?.name || "Unknown"}</div>
+                  <div className="text-sm text-gray-600">{formatMetaDate(r.meta)}</div>
+                  <div className="text-sm text-gray-500 mt-2">{r.meta?.city || ""}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-      {/* =======for mobile======= */}
 
+      {/* =======for mobile======= */}
       <div className="max-md:block hidden pb-10 pt-2">
         <div className="mx-auto w-[98%] min-h-screen">
           <div className="flex flex-col gap-3 h-screen">
@@ -100,12 +137,10 @@ export default function Page() {
 
                     {/* Left Big Box */}
                     <Link href="/kundali" className="flex-1 rounded-3xl card-bg p-5 overflow-hidden relative">
-                      {/* <Link href="/kundali"> */}
                       <div className="text-2xl">
                         Kundali
                       </div>
                       <img src="/images/homeKundali.png" alt="" className="w-35 h-35 absolute bottom-0 right-0" />
-                      {/* </Link> */}
                     </Link>
 
                     {/* Right Column */}
@@ -135,12 +170,24 @@ export default function Page() {
                 </div>
 
                 {/* Bottom Box */}
-                <div className="flex-1 rounded-3xl border border-neutral-300 dark:border-neutral-700 card-bg p-5">
+                <div className="flex-1 rounded-3xl border border-neutral-300 dark:border-neutral-700 card-bg p-5 overflow-y-auto">
                   <div className="mb-1">
                     Recent Kundali.
                   </div>
-                  <div className="border">
-
+                  <div className="mt-3 space-y-2 p-2 rounded overflow-y-auto">
+                    {recent.length === 0 && (
+                      <div className="text-gray-500">No recent kundalis</div>
+                    )}
+                    {recent.map((r, idx) => (
+                      <div
+                        key={r.id}
+                        className="p-3 rounded-md bg-white/80 dark:bg-[#1f1f1f] cursor-pointer"
+                        onClick={() => router.push(`/kundaliInfo?index=${idx}`)}
+                      >
+                        <div className="font-semibold">{r.meta?.name || "Unknown"}</div>
+                        <div className="text-sm text-gray-300">{formatMetaDate(r.meta)} {" "} {r.meta?.city || ""} </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
