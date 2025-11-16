@@ -221,7 +221,7 @@ export default function KundaliPage() {
     setResult(null);
 
     try {
-      const res = await fetch("https://kundalipwa.onrender.com", {
+      const res = await fetch("https://kundalipwa.onrender.com/kundali", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
