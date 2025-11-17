@@ -419,7 +419,7 @@ export default function MahadashaPage() {
                                                         className="w-full flex justify-between items-center"
                                                     >
                                                         <div>
-                                                            <div className="font-semibold text-lg text-[#a56a00]">
+                                                            <div className="font-semibold text-lg text-[#a56a00] text-left!">
                                                                 {PLANET_HINDI[ad.lord]}
                                                             </div>
                                                             <div className="text-sm text-gray-600">
