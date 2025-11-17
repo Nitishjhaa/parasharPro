@@ -32,6 +32,7 @@ export default function KundaliInfoInner() {
   }, [indexParam, router]);
 
   // console.log((kundali?.raw?.planets?.Sun?.house))
+  console.log((kundali?.raw))
 
   if (!kundali) return <div className="p-4 text-white">Loading...</div>;
 
@@ -65,7 +66,7 @@ export default function KundaliInfoInner() {
           />
           <div className="w-full text-white mt-5 text-lg" onClick={() => setIsSideOpen(!isSideOpen)}>
             <div className="border-b-2 pb-2">
-              <Link href={`/kundaliInfo`} >
+              <Link href={`/kundaliInfo?index=${indexParam}`} >
                 लग्न कुंडली
               </Link>
             </div>
@@ -78,10 +79,13 @@ export default function KundaliInfoInner() {
               सामान्य परिचय
             </div>
             <div className="border-b-2 py-2">
+              
               फलादेश
             </div>
             <div className="border-b-2 py-2">
+              <Link href={`/kundaliInfo/mahadasha?index=${indexParam}`}>
               महादशा
+              </Link>
             </div>
             <div className="border-b-2 py-2">
               दोष

@@ -220,8 +220,10 @@ export default function KundaliPage() {
     setLoading(true);
     setResult(null);
 
+    // https://kundalipwa.onrender.com/kundali
+
     try {
-      const res = await fetch("https://kundalipwa.onrender.com/kundali", {
+      const res = await fetch("http://localhost:8080/kundali", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -560,7 +562,7 @@ export default function KundaliPage() {
             </button>
           </div>
 
-          {result && (
+          {/* {result && (
             <div className="mt-4 card-bg rounded-3xl p-4">
               <details>
                 <summary>View JSON</summary>
@@ -569,7 +571,7 @@ export default function KundaliPage() {
                 </pre>
               </details>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -681,7 +683,7 @@ export default function KundaliPage() {
             </button>
           </div>
 
-          {result && (
+          {/* {result && (
             <div className="mt-8 bg-white p-6 rounded-xl shadow">
               <details>
                 <summary className=" cursor-pointer font-semibold text-black">
@@ -692,7 +694,7 @@ export default function KundaliPage() {
                 </pre>
               </details>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>
