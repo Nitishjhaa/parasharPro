@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import KundaliStructure from '@/components/KundaliStructure';
 import PlanetTable from "@/components/PlanetTable";
 import PlanetAspectTable from "@/components/PlanetAspectTable";
-import Link from "next/link";
+import KundaliHeader from '@/components/KundaliHeader'
 
 export default function KundaliInfoInner() {
   const [kundali, setKundali] = useState(null);
@@ -40,65 +40,12 @@ export default function KundaliInfoInner() {
     <div className="p-2 overflow-hidden text-black" >
       <div className="w-[98%] mx-auto">
 
-        {/* HEADER */}
-        <div className="rounded-3xl overflow-hidden mb-4">
-          <div className="bg-linear-to-r from-[#FFE984] to-[#FFB111] p-5 flex gap-4 items-center">
-            <img
-              src="/images/kundaliHead.png"
-              className={`${isSideOpen ? 'rotate-180' : ''} transition-all duration-300 w-12 brightness-0`}
-              onClick={() => setIsSideOpen(!isSideOpen)}
-            />
-            <span className="bg-linear-to-l from-[#F26A20]/50 to-red-500 bg-clip-text text-transparent text-xl">
-               लग्न कुंडली
-            </span>
-          </div>
-        </div>
-
-        {/* Keep panel mounted always */}
-        <div
-          className={`max-md:block hidden h-screen w-70 bg-black absolute z-20 rounded-3xl p-3
-            transition-all duration-300 delay-150 top-2 ${isSideOpen ? 'left-2' : '-left-80'}`}
-        >
-          <img
-            src="/images/kundaliHead.png"
-            className={`${isSideOpen ? 'rotate-180' : ''} transition-all duration-300 w-12 brightness-0 invert-100`}
-            onClick={() => setIsSideOpen(!isSideOpen)}
-          />
-          <div className="w-full text-white mt-5 text-lg" onClick={() => setIsSideOpen(!isSideOpen)}>
-            <div className="border-b-2 pb-2">
-              <Link href={`/kundaliInfo?index=${indexParam}`} >
-                लग्न कुंडली
-              </Link>
-            </div>
-            <div className="border-b-2 py-2">
-              <Link href={`/kundaliInfo/navmansha?index=${indexParam}`}>
-                नवमांश कुंडली
-              </Link>
-            </div>
-            <div className="border-b-2 py-2">
-              सामान्य परिचय
-            </div>
-            <div className="border-b-2 py-2">
-              
-              फलादेश
-            </div>
-            <div className="border-b-2 py-2">
-              <Link href={`/kundaliInfo/mahadasha?index=${indexParam}`}>
-              महादशा
-              </Link>
-            </div>
-            <div className="border-b-2 py-2">
-              दोष
-            </div>
-            <div className="border-b-2 py-2">
-              रत्न
-            </div>
-            <div className="border-b-2 py-2">
-              उपाय
-            </div>
-          </div>
-        </div>
-
+        <KundaliHeader
+          title="लग्न कुंडली"
+          indexParam={indexParam}
+          isSideOpen={isSideOpen}
+          setIsSideOpen={setIsSideOpen}
+        />
 
         {/* <h1 className="text-2xl mb-4">Kundali Information</h1> */}
 
@@ -117,9 +64,9 @@ export default function KundaliInfoInner() {
         </div>
 
       </div>
-      <pre className="whitespace-pre-wrap bg-black/40 p-3 rounded-xl text-white">
+      {/* <pre className="whitespace-pre-wrap bg-black/40 p-3 rounded-xl text-white">
         {JSON.stringify(kundali.raw, null, 2)}
-      </pre>
+      </pre> */}
     </div>
   );
 }
