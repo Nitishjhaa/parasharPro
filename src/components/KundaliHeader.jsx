@@ -26,9 +26,8 @@ export default function KundaliHeader({
 
       {/* ---------- SIDE MENU (Mobile) ---------- */}
       <div
-        className={`max-md:block hidden h-screen w-70 bg-black absolute z-20 rounded-3xl p-3 transition-all duration-300 delay-150 top-2 ${
-          isSideOpen ? "left-2" : "-left-80"
-        }`}
+        className={`max-md:block hidden h-screen w-70 bg-black absolute z-20 rounded-3xl p-3 transition-all duration-300 delay-150 top-2 ${isSideOpen ? "left-2" : "-left-80"
+          }`}
       >
         <img
           src="/images/kundaliHead.png"
@@ -56,7 +55,11 @@ export default function KundaliHeader({
             </Link>
           </div>
 
-          <div className="border-b-2 py-2">सामान्य परिचय</div>
+          <div className="border-b-2 py-2">
+            <Link href={`/kundaliInfo/Info?index=${indexParam}`}>
+              सामान्य परिचय
+            </Link>
+          </div>
 
           <div className="border-b-2 py-2">फलादेश</div>
 
