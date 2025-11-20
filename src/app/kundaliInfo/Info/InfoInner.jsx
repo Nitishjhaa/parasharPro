@@ -94,7 +94,9 @@ export default function KundaliInfoInner() {
 
                 </div>
             </div>
-
+            <pre className="whitespace-pre-wrap bg-black/40 p-3 rounded-xl text-white">
+                {JSON.stringify(kundali.raw, null, 2)}
+            </pre>
         </div>
     );
 }
